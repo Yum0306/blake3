@@ -1,40 +1,61 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <input type="file" @change="changeFile">
+    
   </div>
 </template>
 
 <script>
+// import xxhash from "xxhash-wasm";
+// import * as blake3 from 'blake3/browser-async';
+// const { hash, createHash } = require('blake3');
+import * as blake3 from 'blake3';
 export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  methods: {
+    changeFile(ev) {
+
+      let s  = new Date().getTime()
+      console.log("s:",s);
+      let file = ev.target.files[0]
+      console.log(file)
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(ev.target.files[0]);
+      reader.onprogress = function(e){
+         console.log("loaded:",e.loaded)
+      }
+      reader.onload = function (e) {
+          console.log('DONE', e.target.readyState); // readyState will be 2
+          
+          console.log(e.target.result)
+          const unit8array = new Uint8Array(e.target.result)
+          console.log(unit8array)
+
+          // let test = await blake.load()
+          
+
+          blake3.load().then(() => {
+            console.log(blake3.hash(unit8array).toString('hex'))
+          });
+          // xxhash().then(hasher => {
+
+          //         // 32-bit version
+          //         console.log(hasher.h32(unit8array)); // 3998627172 (decimal representation)
+          //         // For convenience, get hash as string of its zero-padded hex representation
+          //         console.log(hasher.h32ToString(unit8array)); // "ee563564"
+
+          //         // 64-bit version
+          //         console.log(hasher.h64(unit8array)); // 5776724552493396044n (BigInt)
+          //         // For convenience, get hash as string of its zero-padded hex representation
+          //         console.log(hasher.h64ToString(unit8array)); // "502b0c5fc4a5704c"
+          //         console.log("e:",(new Date().getTime()-s));
+          //         ev.value = ''
+          // });
+      };
+    }
   }
 }
 </script>
