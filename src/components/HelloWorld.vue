@@ -9,7 +9,9 @@
 // import xxhash from "xxhash-wasm";
 // import * as blake3 from 'blake3/browser-async';
 // const { hash, createHash } = require('blake3');
-import * as blake3 from 'blake3';
+// import * as blake3 from 'blake3';
+// import { blake3 } from '@noble/hashes/blake3';
+// import { bytesToHex as toHex } from '@noble/hashes/utils';
 export default {
   name: 'HelloWorld',
   props: {
@@ -22,24 +24,27 @@ export default {
       console.log("s:",s);
       let file = ev.target.files[0]
       console.log(file)
-      const reader = new FileReader();
-      reader.readAsArrayBuffer(ev.target.files[0]);
-      reader.onprogress = function(e){
-         console.log("loaded:",e.loaded)
-      }
-      reader.onload = function (e) {
-          console.log('DONE', e.target.readyState); // readyState will be 2
+      // const reader = new FileReader();
+      // reader.readAsArrayBuffer(ev.target.files[0]);
+      // reader.onprogress = function(e){
+      //    console.log("loaded:",e.loaded)
+      // }
+      // reader.onload = function (e) {
+          // console.log('DONE', e.target.readyState); // readyState will be 2
           
-          console.log(e.target.result)
-          const unit8array = new Uint8Array(e.target.result)
-          console.log(unit8array)
+          // console.log(e.target.result)
+        const unit8array = new Uint8Array(ev.target.files[0])
+        console.log(unit8array)
 
           // let test = await blake.load()
           
 
-          blake3.load().then(() => {
-            console.log(blake3.hash(unit8array).toString('hex'))
-          });
+          // blake3.load().then(() => {
+          //   console.log(blake3.keyedHash(unit8array).toString('hex'))
+          // });
+          
+          console.log(toHex(blake3(unit8array)))
+          
           // xxhash().then(hasher => {
 
           //         // 32-bit version
@@ -54,7 +59,8 @@ export default {
           //         console.log("e:",(new Date().getTime()-s));
           //         ev.value = ''
           // });
-      };
+          ev.value = ''
+      // };
     }
   }
 }
