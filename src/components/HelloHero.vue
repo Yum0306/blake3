@@ -63,7 +63,6 @@
 </template>
   
 <script>
-// import $ from 'jquery';
 import CryptoJS from 'crypto-js';
 
 Array.prototype.remove = Array.prototype.remove || function(val){
